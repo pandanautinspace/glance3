@@ -1,0 +1,9 @@
+body {
+	min-height: 100vh;
+	margin: 0;
+}
+
+main {
+    background-color: antiquewhite;
+	border-radius: 1em;
+}

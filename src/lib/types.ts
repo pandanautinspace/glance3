@@ -1,0 +1,1 @@
+export type Student = { name: string; year: string; address: string; mailbox: string; ho_city: string; ho_state: string; email: string; };
