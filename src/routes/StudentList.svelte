@@ -1,6 +1,9 @@
 <script lang="ts">
     import StudentItem from "./StudentItem.svelte";
+    import { PieChart, type PieChartOptions } from "chartist";
+    import 'chartist/dist/index.css';
     import type { Student } from "$lib/types";
+    import { onMount } from "svelte";
     export let students: Student[];
     type Filter = { id: number; searchString: string; key: keyof Student };
     let id_count = 1;
@@ -24,9 +27,28 @@
     };
 
     $: filtered = filter(students);
+    let firstLoadFinished = false;
+    $: {
+        if(firstLoadFinished) {
+            let labels = filtered.map(s => s.ho_state).filter((v, i, a) => i == a.lastIndexOf(v));
+        let series = labels.map(l => filtered.filter(v => v.ho_state == l).length);
+        let p = new PieChart(".state-chart", {labels, series});
+        }
+    }
+    onMount(() => {
+        let labels = filtered.map(s => s.ho_state).filter((v, i, a) => i == a.lastIndexOf(v));
+        let series = labels.map(l => filtered.filter(v => v.ho_state == l).length);
+        let p = new PieChart(".state-chart", {labels, series});
+        firstLoadFinished = true;
+    })
+    
+
+
+    
 </script>
 
 {#each filters as _ (_.id)}
+    <div class="state-chart" />
     <div class="filter">
         <select bind:value={_.key}>
             {#each Object.keys(students[0]) as k}
@@ -80,5 +102,8 @@
     }
     .filter input {
         flex: 1;
+    }
+    .state-chart {
+        height: 20vh;
     }
 </style>
